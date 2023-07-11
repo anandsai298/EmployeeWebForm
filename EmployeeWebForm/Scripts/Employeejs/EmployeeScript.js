@@ -11,6 +11,11 @@ $(function () {
     CreateViewModel.viewEmployees();
 });
 
+/*var ViewModel = new CreateViewModel()
+ViewModel.addressList = addressList;
+ko.applyBindings(ViewModel);
+var AddressList = ["Hyderabad", "Chennai", "Banglore", "Vijayawada"];*/
+
 var CreateViewModel =
 {
     Employee: ko.observableArray([]),
@@ -22,6 +27,7 @@ var CreateViewModel =
     DateOfBirth: ko.observable(),//.extend({ required: { message:"please Select date" } }),
     DateOfJoining: ko.observable(),//.extend({ required: { message:"please Select date" } }),
     Salary: ko.observable(),//.extend({ required: { message: "please enter Salary" }, minlength: 4, maxlength: 50 }),
+    //AddressList: ko.observable(),
     //errors: ko.validation.group(CreateViewModel, {deep:true,observable:false}),
     validate: function () {
         var isValid = true;

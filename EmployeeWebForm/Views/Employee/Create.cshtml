@@ -6,22 +6,12 @@
 }
 
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
-<h2>Employee</h2>
+<link href="~/Content/Employee/EmployeeStyleSheet.css" rel="stylesheet" />
 <fieldset>
-    <div style=" display:flex; column-gap:10px">
-        @using (Html.BeginForm("Export", "Employee", new { id = "pdf" }, FormMethod.Get))
-        {
-            <input type="submit" id="btnSubmit" value="Export pdf" />
-        }
-        @using (Html.BeginForm("Export", "Employee", new { id = "excel" }, FormMethod.Get))
-        {
-            <input type="submit" id="btnSubmit" value="Export excel" />
-        }
-    </div>
     <legend>Create Employee</legend>
     <input type="hidden" data-bind="value: EmployeeID" class="form-control" id="EmployeeID" />
     <div class="editor-label">
-        EmployeeName
+        <strong>EmployeeName</strong>
     </div>
     <div class="editor-field">
         <input data-bind="value: EmployeeName" class="form-control" id="employeeName" />
@@ -29,43 +19,48 @@
 
     </div>
     <div class="editor-label">
-        EmailID
-    </div>
+        <strong>EmailID</strong>
+</div>
     <div class="editor-field">
         <input data-bind="value: EmailID" class="form-control" id="emailID" />
         <span id="EmailID-error" class="error"></span>
 
     </div>
     <div class="editor-label">
-        PhoneNumber
+        <strong>PhoneNumber</strong>
     </div>
     <div class="editor-field">
         <input data-bind="value: PhoneNumber" class="form-control" id="phoneNumber" />
         <span id="PhoneNumber-error" class="error"></span>
     </div>
     <div class="editor-label">
-        Address
+        <strong>City</strong>
     </div>
     <div class="editor-field">
-        <input data-bind="value: Address" class="form-control" id="address" />
+        <select data-bind="value: Address" class="form-control" id="address">
+            <option value="select">Select a City</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Banglore">Banglore</option>
+            <option value="Chennai">Chennai</option>
+        </select>
         <span id="Address-error" class="error"></span>
     </div>
     <div class="editor-label">
-        DateOfBirth
+        <strong>DateOfBirth</strong>
     </div>
     <div class="editor-field">
         <input type="date" data-bind="value: DateOfBirth" class="form-control" id="dateOfBirth" />
         <span id="DateOfBirth-error" class="error"></span>
     </div>
     <div class="editor-label">
-        DateOfJoining
+        <strong>DateOfJoining</strong>
     </div>
     <div class="editor-field">
         <input type="date" data-bind="value: DateOfJoining" class="form-control" id="DateOfJoining" />
         <span id="DateOfJoining-error" class="error"></span>
     </div>
     <div class="editor-label">
-        Salary
+        <strong>Salary</strong>
     </div>
     <div class="editor-field">
         <input data-bind="value: Salary" class="form-control" id="Salary" />
@@ -73,8 +68,8 @@
     </div>
     <br />
     <p>
-        <input type="button" value="Create" data-bind="click: SaveEmployee" id="create" class="btn btn-default">
-        <input type="button" value="Save" data-bind="click: EditEmployee" id="edit" class="btn btn-default">
+        <input type="button" value="Create" data-bind="click: SaveEmployee" id="create" class="btn btn-default" style="background-color:cadetblue;color:aquamarine">
+        <input type="button" value="Save" data-bind="click: EditEmployee" id="edit" class="btn btn-default"style="background-color:white;color:lawngreen">
     </p>
 </fieldset>
 <div id="Grid">
@@ -101,12 +96,22 @@
                 <td data-bind="text: DateOfJoining"></td>
                 <td data-bind="text: Salary"></td>
                 <td>
-                    <button type="button" data-bind="click: EditEmployee">Edit</button>
-                    <button type="button" data-bind="click: DeleteEmployee">Delete</button>
+                    <button type="button" data-bind="click: EditEmployee" style="color:darkgreen">Edit</button>
+                    <button type="button" data-bind="click: DeleteEmployee" style="color:red">Delete</button>
                 </td>
             </tr>
         </tbody>
     </table>
+    <div style=" display:flex; column-gap:10px">
+        @using (Html.BeginForm("Export", "Employee", new { id = "pdf" }, FormMethod.Get))
+        {
+            <input type="submit" id="btnSubmit" value="Export pdf" style="color:orangered;background-color:lightyellow" />
+        }
+        @using (Html.BeginForm("Export", "Employee", new { id = "excel" }, FormMethod.Get))
+        {
+            <input type="submit" id="btnSubmit" value="Export excel" style="color: seagreen; background-color: lightyellow" />
+        }
+    </div>
 </div>
 
 @section Scripts
