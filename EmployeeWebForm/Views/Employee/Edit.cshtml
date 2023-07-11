@@ -1,0 +1,233 @@
+﻿@model EmployeeWebForm.Employee
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Update</h2>
+
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
+<div class="form-horizontal">
+    <h4> Employee </h4>
+    <hr>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="EmployeeID"> Employee ID </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="EmployeeID" name="EmployeeID" type="text" value="" data-bind="value: EmployeeID">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="EmployeeName"> EmployeeName </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="EmployeeName" name="EmployeeName" type="text" value="" data-bind="value: EmployeeName">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="EmailID"> EmailID </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="EmailID" name="EmailID" type="text" value="" data-bind="value: EmailID">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="PhoneNumber"> PhoneNumber </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="PhoneNumber" name="PhoneNumber" type="text" value="" data-bind="value: PhoneNumber">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="Address"> Address </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="Address" name="Address" type="text" value="" data-bind="value: Address">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="DateOfBirth"> DateOfBirth </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="DateOfBirth" name="DateOfBirth" type="text" value="" data-bind="value: DateOfBirth">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="DateOfJoining"> DateOfJoining </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="DateOfJoining" name="DateOfJoining" type="text" value="" data-bind="value: DateOfJoining">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="Salary"> Salary </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="Salary" name="Salary" type="text" value="" data-bind="value: Salary">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="button" data-bind="click: updateEmployee" value="Update" class="btn btn-default">
+        </div>
+    </div>
+</div>
+<div> @Html.ActionLink("Back to List", "") </div>
+<script src="~/Scripts/knockout-3.5.1.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+<script type = "text/javascript" >
+        var selectedEmployee = '@Html.Raw(ViewBag.selectedEmployee)';
+        var parsedSelectedEmployee = $.parseJSON(selectedEmployee);
+
+        function EmployeeViewModel() {
+            var self = this;
+            self.EmployeeID = ko.observable(parsedSelectedEmployee.EmployeeID);
+            self.EmployeeName = ko.observable(parsedSelectedEmployee.EmployeeName);
+            self.EmailID = ko.observable(parsedSelectedEmployee.EmailID);
+            self.PhoneNumber = ko.observable(parsedSelectedEmployee.PhoneNumber);
+            self.Address = ko.observable(parsedSelectedEmployee.Address);
+            self.DateOfBirth = ko.observable(parsedSelectedEmployee.DateOfBirth);
+            self.DateOfJoining = ko.observable(parsedSelectedEmployee.DateOfJoining);
+            self.Salary = ko.observable(parsedSelectedEmployee.Salary);
+
+            self.updateEmployee = function () {
+                debugger;
+                if (validateForm()) {
+                    var employeedata =
+                    {
+                        EmployeeName: self.EmployeeName(),
+                        EmailID: self.EmailID(),
+                        PhoneNumber: self.PhoneNumber(),
+                        Address: self.Address(),
+                        DateOfBirth: self.DateOfBirth(),
+                        DateOfJoining: self.DateOfJoining(),
+                        Salary: self.Salary(),
+                    };
+                    $.ajax({
+                        url: '/Employee/Update',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: employeedata,
+                        contentType: 'application/json',
+                        success: function (data) {
+                            self.Employee(data);
+                            window.location.href = '/Employee/Index/';
+                        },
+                        error: function () {
+                            alert('An error occurred while updating the employee.');
+                        }
+                    });
+                }
+            };
+            function validateForm() {
+                if (self.EmployeeName() === '') {
+                    alert('Please enter the Employee Name.');
+                    return false;
+                }
+                if (self.EmailID() === '') {
+                    alert('Please enter the Email ID.');
+                    return false;
+                }
+                if (self.PhoneNumber() === '') {
+                    alert('Please enter the PhoneNumber.');
+                    return false;
+                }
+                if (self.Address() === '') {
+                    alert('Please enter the Address.');
+                    return false;
+                }
+                if (self.DateOfBirth() === '') {
+                    alert('Please enter the DateOfBirth.');
+                    return false;
+                }
+                if (self.DateOfJoining() === '') {
+                    alert('Please enter the DateOfJoining.');
+                    return false;
+                }
+                if (self.Salary() === '') {
+                    alert('Please enter the Salary.');
+                    return false;
+                }
+                return true;
+            }
+        };
+        var viewModel = new EmployeeViewModel();
+        ko.applyBindings(viewModel);
+    </script>
+
+@*using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <h4>Employee</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.EmployeeID)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.EmployeeName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.EmployeeName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.EmployeeName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.EmailID, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.EmailID, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.EmailID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.DateOfBirth, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.DateOfBirth, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.DateOfJoining, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.DateOfJoining, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DateOfJoining, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }*@

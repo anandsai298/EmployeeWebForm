@@ -1,0 +1,192 @@
+﻿@model EmployeeWebForm.Employee
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
+<div class="form-horizontal">
+    <h4> Employee </h4>
+    <hr>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="EmployeeID"> Employee ID </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="EmployeeID" name="EmployeeID" type="text" value="" data-bind="value: EmployeeID">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="EmployeeName"> EmployeeName </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="EmployeeName" name="EmployeeName" type="text" value="" data-bind="value: EmployeeName">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="EmailID"> EmailID </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="EmailID" name="EmailID" type="text" value="" data-bind="value: EmailID">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="PhoneNumber"> PhoneNumber </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="PhoneNumber" name="PhoneNumber" type="text" value="" data-bind="value: PhoneNumber">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="Address"> Address </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="Address" name="Address" type="text" value="" data-bind="value: Address">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="DateOfBirth"> DateOfBirth </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="DateOfBirth" name="DateOfBirth" type="text" value="" data-bind="value: DateOfBirth">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="DateOfJoining"> DateOfJoining </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="DateOfJoining" name="DateOfJoining" type="text" value="" data-bind="value: DateOfJoining">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="Salary"> Salary </label>
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" id="Salary" name="Salary" type="text" value="" data-bind="value: Salary">
+        </div>
+    </div>
+    <div class = "form-group" > 
+        <div class = "col-md-offset-2 col-md-10" > 
+            <input type = "button" data-bind = "click: deleteEmployee" value = "Delete" class = "btn btn-default" > 
+         </div>
+    </div>
+</div>
+<div> @Html.ActionLink("Back to List", "") </div>
+<script src="~/Scripts/knockout-3.5.1.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+<script type = "text/javascript" >  
+    var selectedEmployee = '@Html.Raw(ViewBag.selectedEmployee)';
+    var parsedSelectedEmployee = $.parseJSON(selectedEmployee);
+    function EmployeeViewModel() {
+        var self = this;
+
+        self.EmployeeID = ko.observable(parsedSelectedEmployee.EmployeeID);
+        self.EmployeeName = ko.observable(parsedSelectedEmployee.EmployeeName);
+        self.EmailID = ko.observable(parsedSelectedEmployee.EmailID);
+        self.PhoneNumber = ko.observable(parsedSelectedEmployee.PhoneNumber);
+        self.Address = ko.observable(parsedSelectedEmployee.Address);
+        self.DateOfBirth = ko.observable(parsedSelectedEmployee.DateOfBirth);
+        self.DateOfJoining = ko.observable(parsedSelectedEmployee.DateOfJoining);
+        self.Salary = ko.observable(parsedSelectedEmployee.Salary);
+
+        self.deleteEmployee = function () {
+            var employeedata = {
+                EmployeeID: self.EmployeeID(),
+                EmployeeName: self.EmployeeName(),
+                EmailID: self.EmailID(),
+                PhoneNumber: self.PhoneNumber(),
+                Address: self.Address(),
+                DateOfBirth: self.DateOfBirth(),
+                DateOfJoining: self.DateOfJoining(),
+                Salary: self.Salary(),
+            };
+
+            $.ajax({
+                url: '/Employee/Delete',
+                type: 'POST',
+                datatype: 'text',
+                data: employeedata,
+                success: function (data) {
+                    window.location.href = '/Employee/Index/';
+                },
+                error: function () {
+                    window.location.href = '/Employee/Index/';
+                }
+            });
+
+            alert('Employee deleted successfully!');
+        };
+    };
+
+    var viewModel = new EmployeeViewModel();
+    ko.applyBindings(viewModel);
+</script>
+@*<div>
+        <h4>Employee</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.EmployeeName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.EmployeeName)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.EmailID)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.EmailID)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.PhoneNumber)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Address)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Address)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateOfBirth)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateOfBirth)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateOfJoining)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateOfJoining)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Salary)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Salary)
+            </dd>
+
+        </dl>
+
+        @using (Html.BeginForm()) {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" /> |
+                @Html.ActionLink("Back to List", "Index")
+            </div>
+        }
+    </div>*@

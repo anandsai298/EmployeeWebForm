@@ -1,0 +1,186 @@
+﻿@model IEnumerable<EmployeeWebForm.Employee>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
+<div style=" display:flex; column-gap:10px">
+    @using (Html.BeginForm("Export", "Employee", new { id = "pdf" }, FormMethod.Get))
+    {
+        <input type="submit" id="btnSubmit" value="Export pdf" />
+    }
+    @using (Html.BeginForm("Export", "Employee", new { id = "excel" }, FormMethod.Get))
+    {
+        <input type="submit" id="btnSubmit" value="Export excel" />
+    }
+</div>
+<table class="table">
+    <tr>
+        <th>
+            Employee ID
+        </th>
+        <th>
+            EmployeeName
+        </th>
+        <th>
+            EmailID
+        </th>
+        <th>
+            PhoneNumber
+        </th>
+        <th>
+            Address
+        </th>
+        <th>
+            DateOfBirth
+        </th>
+        <th>
+            DateOfJoining
+        </th>
+        <th>
+            Salary
+        </th>
+        <th></th>
+    </tr>
+    <tbody data-bind="foreach: Employees">
+        <tr>
+            <td data-bind="text: EmployeeID"></td>
+            <td data-bind="text: EmployeeName"></td>
+            <td data-bind="text: EmailID"></td>
+            <td data-bind="text: PhoneNumber"></td>
+            <td data-bind="text: Address"></td>
+            <td data-bind="text: DateOfBirth"></td>
+            <td data-bind="text: DateOfJoining"></td>
+            <td data-bind="text: Salary"></td>
+
+            <td>
+                <a data-bind="attr: { 'href': '/Employee/Edit?id=' + EmployeeID } " class="btn-link">Edit</a>
+                <a data-bind="attr: { 'href': '/Employee/Delete?id=' + EmployeeID }" class="btn-link">Delete</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<script src="~/Scripts/knockout-3.5.1.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+<script>
+    $(function () {
+        ko.applyBindings(modelView);
+        modelView.viewEmployees();
+    });
+    var modelView = {
+        Employees: ko.observableArray([]),
+
+        viewEmployees: function () {
+            var self = this;
+            try {
+                $.ajax({
+                    url: '/Employee/ListEmployees',
+                    type: 'GET',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        self.Employees(data);
+                    },
+                    error: function (err) {
+                        alert(err.status + " : " + err.statusText);
+                    }
+                });
+            } catch (e) {
+                window.location.href = '/Employee/Index';
+            }
+        },
+        exportpdf: function ()
+        {
+            $.ajax({
+                url: '/Employee/Export',
+                type: 'get',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (result) {
+                },
+                error: function (err) {
+                    if (err.responseText == "Creation Failed")
+                    {
+                        window.location.href = '/Employee/CreateEmployee/';
+                    }
+                    else {
+                        alert("Status:" + err.responseText);
+                        window.location.href = '/Employee/CreateEmployee/';;
+                    }
+                },
+                complete: function () {
+                    window.location.href = '/Employee/CreateEmployee/';
+                }
+            });
+        }
+    }
+        
+</script>
+
+@*@<table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.EmployeeName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmailID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateOfBirth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateOfJoining)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Salary)
+            </th>
+            <th></th>
+        </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmployeeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmailID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfJoining)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Salary)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.EmployeeID }) |
+                @Html.ActionLink("Details", "Details", new { id=item.EmployeeID }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.EmployeeID })
+            </td>
+        </tr>
+    }
+
+    </table>*@
