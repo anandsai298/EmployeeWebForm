@@ -128,11 +128,27 @@ namespace EmployeeWebForm.Controllers
             //Table start.
             sb.Append("<table border='1' cellpadding='5' cellspacing='0'  style='border: 1px solid #ccc; font-family: Arial; font-size: 10pt;'>");
 
+            sb.Append("<h2 style='text-align:center'><strong>EMPLOYEE MANAGEMENT</strong></h2>");
+            sb.Append("<tr>");
+            sb.Append("<th style='background-color: #B8DBFD;border: 1px solid #ccc'>EmployeeID</th>");
+            sb.Append("<th style='background-color: #B8DBFD;border: 1px solid #ccc'>EmployeeName</th>");
+            sb.Append("<th style='background-color: #B8DBFD;border: 1px solid #ccc'>EmailID</th>");
+            sb.Append("<th style='background-color: #B8DBFD;border: 1px solid #ccc'>PhoneNumber</th>");
+            sb.Append("<th style='background-color: #B8DBFD;border: 1px solid #ccc'>Address</th>");
+            sb.Append("<th style='background-color: #B8DBFD;border: 1px solid #ccc'>DateOfBirth</th>");
+            sb.Append("<th style='background-color: #B8DBFD;border: 1px solid #ccc'>DateOfJoining</th>");
+            sb.Append("<th style='background-color: #B8DBFD;border: 1px solid #ccc'>Salary</th>");
+            sb.Append("</tr>");
             //Building the Data rows.
+           
+
             for (int i = 0; i < emp.Count; i++)
             {
                 var item = emp[i];
                 sb.Append("<tr>");
+                sb.Append("<td style='border: 1px solid #ccc'>");
+                sb.Append(item.EmployeeID);
+                sb.Append("</td>");
                 sb.Append("<td style='border: 1px solid #ccc'>");
                 sb.Append(item.EmployeeName);
                 sb.Append("</td>");

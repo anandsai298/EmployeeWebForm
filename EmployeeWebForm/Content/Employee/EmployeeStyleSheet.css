@@ -1,6 +1,20 @@
 ﻿body {
-    background-color:lightgray;
+    background-color:whitesmoke;
 }
 legend{
-    color:darkolivegreen;
+    color:dodgerblue;
 }
+.navbar-toggler {
+    background-color: dodgerblue;
+}
+#employeeTable {
+    border-collapse: collapse;
+}
+#employeeTable th,
+#employeeTable td{
+    border:1px solid black;
+    padding:8px;
+}
+
+
+

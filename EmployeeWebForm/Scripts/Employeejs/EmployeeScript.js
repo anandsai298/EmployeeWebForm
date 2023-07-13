@@ -4,18 +4,14 @@
 
 $(function () {
     ko.applyBindings(CreateViewModel);
-    /*ko.validation.init
-        ({
-            messagesOnModified: false, errorClass: 'errorStyle', insertMessages: true
-        });*/
     CreateViewModel.viewEmployees();
 });
 
-/*var ViewModel = new CreateViewModel()
-ViewModel.addressList = addressList;
-ko.applyBindings(ViewModel);
-var AddressList = ["Hyderabad", "Chennai", "Banglore", "Vijayawada"];*/
-
+//var ViewModel = new CreateViewModel()
+//ViewModel.addressList = addressList;
+//ko.applyBindings(ViewModel);
+//ViewModel.viewEmployees();
+//var AddressList = ["Hyderabad", "Chennai", "Banglore", "Vijayawada"];
 var CreateViewModel =
 {
     Employee: ko.observableArray([]),
@@ -29,21 +25,30 @@ var CreateViewModel =
     Salary: ko.observable(),//.extend({ required: { message: "please enter Salary" }, minlength: 4, maxlength: 50 }),
     //AddressList: ko.observable(),
     //errors: ko.validation.group(CreateViewModel, {deep:true,observable:false}),
-    validate: function () {
-        var isValid = true;
-        this.clearValidationErrors();
+    showCreateForm: ko.observable(true),
+    clearErrorContainer: function () {
+        var errorElements = document.getElementsByClassName('errorStyle');
+        for (var i = 0; i < errorElements.length; i++) {
+            errorElements[i].textContent = '';
+            errorElements[i].classList.remove('errorStyle'); // Remove CSS class
+        }
+    },
 
+    validate: function () {
+        this.clearErrorContainer();
+
+        var isValid = true;
         if (!this.EmployeeName() || this.EmployeeName().length < 3 || this.EmployeeName().length > 50) {
             this.displayValidationError('EmployeeName', 'Please enter a valid employee name');
             isValid = false;
         }
 
-        if (!this.EmailID() || this.EmailID().length < 3 || this.EmailID().length > 50) {
+        if (!this.EmailID() || this.EmailID().length < 3 || this.EmailID().length > 50 || (!this.EmailID().endsWith('@gmail.com') && !this.EmailID().endsWith('@amtpl.com') && !this.EmailID().endsWith('@yahoo.com'))) {
             this.displayValidationError('EmailID', 'Please enter a valid email address');
             isValid = false;
         }
 
-        if (!this.PhoneNumber() || this.PhoneNumber().length > 10 || this.PhoneNumber().length < 10) {
+        if (!this.PhoneNumber() || this.PhoneNumber().length > 10 || this.PhoneNumber().length < 10 || isNaN(this.PhoneNumber())) {
             this.displayValidationError('PhoneNumber', 'Please enter a valid 10-digit phone number');
             isValid = false;
         }
@@ -63,33 +68,28 @@ var CreateViewModel =
             isValid = false;
         }
 
-        if (!this.Salary() || this.Salary().length < 4 || this.Salary().length > 50) {
-            this.displayValidationError('Salary', 'Please enter employee salary ');
+        if (!this.Salary() || this.Salary().length < 4 || this.Salary().length > 50 || isNaN(this.Salary())) {
+            this.displayValidationError('Salary', 'Please enter employee salary in Numbers ');
             isValid = false;
         }
         return isValid;
     },
-    displayValidationError: function (propertyName, errorMessage)
-    {
-            console.log('Validation Error - ' + propertyName + ': ' + errorMessage);
-        var error_element = document.getElementById(propertyName + '-error');
-        if (error_element)
-        {
-            error_element.textContent = errorMessage;
-            error_element.style.display = 'block';
+    displayValidationError: function (propertyName, errorMessage) {
+        var errorElement = document.getElementById(propertyName + '-error');
+        if (errorElement) {
+            errorElement.textContent = errorMessage;
+            errorElement.classList.add('errorStyle'); // CSS 
         }
     },
-        clearValidationErrors: function () {
-        console.log('Clearing validation errors');
-    },
 
-    
+
     viewEmployees: function () {
         var add = document.getElementById('create');
         add.type = "button";
         var edit = document.getElementById('edit')
         edit.type = "hidden";
         var self = this;
+
         try {
             $.ajax({
                 url: '/Employee/Index',
@@ -98,6 +98,37 @@ var CreateViewModel =
                 contentType: 'application/json',
                 success: function (data) {
                     self.Employee(data);
+                    $('#employeeTable').DataTable();
+
+                    $(document).ready.function()
+                    {
+                        $('#employeeTable').DataTable({
+                            data: self.Employee(),
+                            columns: [
+                                { data: 'EmployeeName' },
+                                { data: 'EmailID' },
+                                { data: 'PhoneNumber' },
+                                { data: 'Address' },
+                                { data: 'DateOfBirth' },
+                                { data: 'DateOfJoining' },
+                                { data: 'Salary' }
+                            ],
+                            searching: true,
+                            paging: true,
+
+                            footerCallback: function (row, data, start, end, display) {
+                                var app = self.app();
+                                $(app.column(0).footer()).html('<input type="text" placeholder="search EmployeeID"/>');
+                                $(app.column(1).footer()).html('<input type="text" placeholder="search EmployeeName"/>');
+                                $(app.column(2).footer()).html('<input type="text" placeholder="search EmailID"/>');
+                                $(app.column(3).footer()).html('<input type="text" placeholder="search PhoneNumber"/>');
+                                $(app.column(4).footer()).html('<input type="text" placeholder="search Address"/>');
+                                $(app.column(5).footer()).html('<input type="text" placeholder="search DateOfBirth"/>');
+                                $(app.column(6).footer()).html('<input type="text" placeholder="search DateOfJoining"/>');
+                                $(app.column(7).footer()).html('<input type="text" placeholder="search Salary"/>');
+                            }
+                        });
+                    }
                 },
                 error: function (err) {
                     alert(err.status + " : " + err.statusText);
@@ -108,10 +139,8 @@ var CreateViewModel =
         }
     },
 
-    SaveEmployee: function ()
-    {
-        if (this.validate())
-        {
+    SaveEmployee: function () {
+        if (this.validate()) {
             $.ajax({
                 url: '/Employee/Create',
                 type: 'POST',
@@ -130,29 +159,57 @@ var CreateViewModel =
                         window.location.href = '/Employee/Create/';
                     }
                 },
-                complete: function () {
+                complete: function ()
+                {
+                    CreateViewModel.showCreateForm(false);
                     window.location.href = '/Employee/Create/';
-                }
+                },
             });
-        }          
-    },
-
-    EditEmployee: function ()
-    {
-        if (this.validate())
+        }
+        showCreateForm: Function()
         {
+            var app = self.app();
+            app.$('#employeeTable').show();
+            app.$('#createEmployeeContainer').hide();
+        }       
+    },
+    
+        EditEmployee: function () {
+            if (this.validate()) {
+                $.ajax({
+                    url: '/Employee/Edit',
+                    type: 'post',
+                    dataType: 'json',
+                    data: ko.toJSON(this),
+                    contentType: 'application/json',
+                    success: function (result) {
+                    },
+                    error: function (err) {
+                        if (err.responseText == "Creation Failed") {
+                            window.location.href = '/Employee/Create/';
+                        }
+                        else {
+                            alert("Status:" + err.responseText);
+                            window.location.href = '/Employee/Create/';;
+                        }
+                    },
+                    complete: function () {
+                        window.location.href = '/Employee/Create/';
+                    }
+                });
+            }
+        },
+
+        Export: function () {
             $.ajax({
-                url: '/Employee/Edit',
-                type: 'post',
+                url: '/Employee/Export',
+                type: 'get',
                 dataType: 'json',
-                data: ko.toJSON(this),
                 contentType: 'application/json',
                 success: function (result) {
                 },
                 error: function (err) {
-                    if (err.responseText == "Creation Failed") {
-                        window.location.href = '/Employee/Create/';
-                    }
+                    if (err.responseText == "Creation Failed") { window.location.href = '/Employee/Create/'; }
                     else {
                         alert("Status:" + err.responseText);
                         window.location.href = '/Employee/Create/';;
@@ -162,30 +219,10 @@ var CreateViewModel =
                     window.location.href = '/Employee/Create/';
                 }
             });
-        }
-    },
+        },
 
-    Export: function () {
-        $.ajax({
-            url: '/Employee/Export',
-            type: 'get',
-            dataType: 'json',
-            contentType: 'application/json',
-            success: function (result) {
-            },
-            error: function (err) {
-                if (err.responseText == "Creation Failed") { window.location.href = '/Employee/Create/'; }
-                else {
-                    alert("Status:" + err.responseText);
-                    window.location.href = '/Employee/Create/';;
-                }
-            },
-            complete: function () {
-                window.location.href = '/Employee/Create/';
-            }
-        });
-    },
 }
+
 self.EditEmployee = function (emp) {
     var add = document.getElementById('create');
     add.type = "hidden";
